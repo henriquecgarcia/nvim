@@ -22,19 +22,36 @@ return {
     config = function()
         local lint = require("lint")
 
+        -- Only enable linters that have their executables available to avoid ENOENT errors
+        local function installed_linters(names)
+            local ret = {}
+            local bin_map = {
+                golangcilint = "golangci-lint",
+                write_good = "write-good",
+                eslint_d = "eslint_d",
+            }
+            for _, name in ipairs(names) do
+                local bin = bin_map[name] or name
+                if vim.fn.executable(bin) == 1 then
+                    table.insert(ret, name)
+                end
+            end
+            return ret
+        end
+
         lint.linters_by_ft = {
-            javascript = { "eslint_d" },
-            typescript = { "eslint_d" },
-            javascriptreact = { "eslint_d" },
-            typescriptreact = { "eslint_d" },
-            svelte = { "eslint_d" },
-            python = { "ruff" },
-            lua = { "woke" },
-            ansible = { "woke" },
-            markdown = { "woke", "proselint", "write_good" },
-            text = { "woke", "proselint", "write_good" },
-            sh = { "woke" },
-            go = { "golangcilint" },
+            javascript = installed_linters({ "eslint_d" }),
+            typescript = installed_linters({ "eslint_d" }),
+            javascriptreact = installed_linters({ "eslint_d" }),
+            typescriptreact = installed_linters({ "eslint_d" }),
+            svelte = installed_linters({ "eslint_d" }),
+            python = installed_linters({ "ruff" }),
+            lua = installed_linters({ "woke" }),
+            ansible = installed_linters({ "woke" }),
+            markdown = installed_linters({ "woke", "proselint", "write_good" }),
+            text = installed_linters({ "woke", "proselint", "write_good" }),
+            sh = installed_linters({ "woke" }),
+            go = installed_linters({ "golangcilint" }),
         }
 
         local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })

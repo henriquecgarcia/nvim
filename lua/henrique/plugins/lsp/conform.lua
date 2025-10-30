@@ -19,7 +19,6 @@ return {
                 yaml = { "prettier" },
                 -- yaml.docker-compose = { "prettier" },
                 markdown = { "prettier" },
-                text = { "woke" },
                 graphql = { "prettier" },
                 lua = { "stylua" },
                 python = { "ruff" },
